@@ -26,7 +26,7 @@ jobs:
       - name: Build the Docker image
         run: |
           mkdir dist
-          sed -e "s/%%DOCKER_IMAGE%%/${{ env.docker_image }}/g" ./dist/Dockerfile.template > ./dist/Dockerfile
+          sed -e "s/%%DOCKER_IMAGE%%/${{ env.docker_image }}/g" Dockerfile.template > ./dist/Dockerfile
           docker build -f ./dist/Dockerfile . -t ${{ env.image_tag_latest }}
           docker image ls
 
