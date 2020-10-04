@@ -1,0 +1,30 @@
+FROM nginx:1.19.2-alpine
+
+LABEL maintainer="noitran.black@gmail.com"
+
+ENV LANG="en_US.UTF-8"
+ENV LC_ALL="en_US.UTF-8"
+ENV LANGUAGE="en_US.UTF-8"
+
+ARG PHP_UPSTREAM_CONTAINER=php-fpm
+ARG PHP_UPSTREAM_PORT=9000
+
+RUN set -x; \
+    addgroup -g 82 -S www-data; \
+    adduser -u 82 -D -S -G www-data www-data
+
+# ARG PHP_UPSTREAM_CONTAINER=php
+# ARG PHP_UPSTREAM_PORT=9000
+
+# Set upstream conf and remove the default conf
+# RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
+#    && rm /etc/nginx/conf.d/default.conf
+
+COPY startup.sh /opt/startup.sh
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY host.conf /etc/nginx/conf.d/host.conf
+
+WORKDIR /app
+CMD ["/bin/sh", "/opt/startup.sh"]
+
+EXPOSE 80 443
