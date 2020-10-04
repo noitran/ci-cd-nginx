@@ -17,7 +17,7 @@ jobs:
 
       - name: Set Environment Variables
         env:
-          DOCKER_IMAGE: nginx:${{ matrix.nginx_version }}-${{ os_type }}
+          DOCKER_IMAGE: nginx:${{ matrix.nginx_version }}-${{ matrix.os_type }}
           IMAGE_TAG_LATEST: noitran/nginx:${{ matrix.os_type }}-latest
         run: |
           echo "::set-env name=docker_image::${DOCKER_IMAGE}"
