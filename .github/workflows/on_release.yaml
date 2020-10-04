@@ -1,0 +1,54 @@
+name: Github Docker Versioned CI
+
+# - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+on:
+  create:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        nginx_version: ['1']
+        os_type: ['alpine']
+    steps:
+      - uses: actions/checkout@v2
+      - uses: e1himself/goss-installation-action@v1.0.1
+
+      - name: Get git tag
+        uses: noitran/versionee-github-action@master
+        id: get_tag
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          fallback: v1.0.0
+          prefix: v
+
+      - name: Set Environment Variables
+        env:
+          DOCKER_IMAGE: nginx:${{ matrix.nginx_version }}-${{ matrix.os_type }}
+          IMAGE_TAG: noitran/nginx:${{ matrix.os_type }}
+        run: |
+          echo "::set-env name=docker_image::${DOCKER_IMAGE}"
+          echo "::set-env name=image_tag_versioned::${IMAGE_TAG}-${{ steps.get_tag.outputs.tag }}"
+
+      - name: Build the Docker image
+        run: |
+          mkdir dist
+          sed -e "s/%%DOCKER_IMAGE%%/${{ env.docker_image }}/g" Dockerfile.template > ./dist/Dockerfile
+          docker build -f ./dist/Dockerfile . -t ${{ env.image_tag_versioned }}
+          docker image ls
+
+      - name: Test image which was built
+        if: success()
+        run: |
+          dgoss run -t ${{ env.image_tag_versioned }}
+
+      - name: Push image to Docker hub
+        if: success()
+        run: |
+          echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+          docker push ${{ env.image_tag_versioned }}
+          docker logout
