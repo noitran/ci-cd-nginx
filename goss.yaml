@@ -33,3 +33,9 @@ http:
   http://localhost/404:
     status: 404
 
+command:
+  "curl -sI http://localhost -o/dev/null -w '%{http_version}\n'":
+    # 2 should be for http/2 support
+    stdout:
+      - "1.1"
+    exit-status: 0

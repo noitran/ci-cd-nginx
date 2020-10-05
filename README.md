@@ -8,3 +8,6 @@
 
 Repository has Dockerfile with pre-configured Alpine Nginx
 
+## Useful Links
+
+[Mozilla SSL Configuration Generator](https://ssl-config.mozilla.org/#server=nginx&version=1.19.2&config=modern&openssl=1.1.1g-r0&guideline=5.6)
