@@ -1,4 +1,4 @@
-FROM %%DOCKER_IMAGE%%
+FROM nginx:1.19.2-alpine
 
 LABEL maintainer="noitran.black@gmail.com"
 
