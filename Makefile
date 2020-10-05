@@ -13,7 +13,10 @@ build-fresh:
 .PHONY: build
 
 test:
-	dgoss run -t $(IMAGE_TAG)
+	# Nginx needs to start after php-fpm (It depends on upstream) successfully starts,
+	# we need to modify /etc/hosts by adding host before starting the Nginx container, or it will fail.
+	# See: https://docs.docker.com/engine/reference/run/#managing-etchosts
+	dgoss run --add-host app:127.0.0.1 -t $(IMAGE_TAG)
 .PHONY: best
 
 clean:

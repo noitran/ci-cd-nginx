@@ -1,14 +1,27 @@
+process:
+  nginx:
+    running: true
+
 package:
   nginx:
     installed: true
+
+group:
+  www-data:
+    exists: true
+
+user:
+  www-data:
+    exists: true
+    groups:
+      - www-data
+
 port:
   tcp:80:
     listening: true
     ip:
       - 0.0.0.0
-process:
-  nginx:
-    running: true
+
 http:
   http://localhost:
     status: 200
@@ -17,3 +30,6 @@ http:
     timeout: 2000
     body:
       - '<h1>Welcome to nginx!</h1>'
+  http://localhost/404:
+    status: 404
+
