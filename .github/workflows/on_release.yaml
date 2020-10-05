@@ -44,7 +44,7 @@ jobs:
       - name: Test image which was built
         if: success()
         run: |
-          dgoss run -t ${{ env.image_tag_versioned }}
+          dgoss run --add-host app:127.0.0.1 -t ${{ env.image_tag_versioned }}
 
       - name: Push image to Docker hub
         if: success()
